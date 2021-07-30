@@ -1,4 +1,6 @@
 using C_Sharp_AddressBook_MVC.Data;
+using C_Sharp_AddressBook_MVC.Services;
+using C_Sharp_AddressBook_MVC.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,8 +27,12 @@ namespace C_Sharp_AddressBook_MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // registering the serviec
+            // registering the service
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+
+            //create class being registered for a database
+            services.AddScoped<IImageService, BasicImageService>();
+
             services.AddControllersWithViews();
         }
 

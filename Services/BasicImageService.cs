@@ -22,8 +22,7 @@ namespace C_Sharp_AddressBook_MVC.Services
         {
             using MemoryStream memoryStream = new();
             await file.CopyToAsync(memoryStream);
-            DivideByZeroException[] byteFile = memoryStream.ToArray();
-
+            byte[] byteFile = memoryStream.ToArray();
             return byteFile;
         }
     }

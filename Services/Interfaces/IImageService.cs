@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace C_Sharp_AddressBook_MVC.Services.Interfaces
 {
-    internal interface IImageService
+    public interface IImageService
     {
         public Task<byte[]> ConvertFileToByteArrayAsync(IFormFile file);
 

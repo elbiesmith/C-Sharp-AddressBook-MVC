@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using C_Sharp_AddressBook_MVC.Data;
 using C_Sharp_AddressBook_MVC.Models;
+using C_Sharp_AddressBook_MVC.Services.Interfaces;
 
 namespace C_Sharp_AddressBook_MVC.Controllers
 {
@@ -14,9 +15,12 @@ namespace C_Sharp_AddressBook_MVC.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public ContactsController(ApplicationDbContext context)
+        private readonly IImageService _imageService;
+
+        public ContactsController(ApplicationDbContext context, IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         // GET: Contacts
@@ -54,10 +58,16 @@ namespace C_Sharp_AddressBook_MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName,LastName,Address1,Address2,City,State,Zip,Email,Phone,Created,ImageData,ImageType,Id")] Contact contact)
+        public async Task<IActionResult> Create([Bind("FirstName,LastName,Address1,Address2,City,State,Zip,Email,Phone,Created,ImageData,ImageType,ImageFile, Id")] Contact contact)
         {
             if (ModelState.IsValid)
             {
+                if (contact.ImageFile != null)
+                {
+                    contact.ImageData = await _imageService.ConvertFileToByteArrayAsync(contact.ImageFile);
+                    contact.ImageType = contact.ImageFile.ContentType;
+                }
+
                 _context.Add(contact);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
